@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Проверка за аргумент за тема
+if [ -z "$1" ]; then
+  echo "Не е предоставена тема. Използвайте: ./setup_oh_my_posh.sh <path_to_theme>"
+  exit 1
+fi
+
+theme="$1"
+
 # Инсталиране на необходимите пакети
 echo "Инсталирам необходими пакети: curl, git, zip..."
 apt update
@@ -25,10 +33,6 @@ fi
 if ! grep -q 'export PATH=$PATH:~/bin' "$HOME/.bash_profile" 2>/dev/null; then
   echo "Добавям PATH в ~/.bash_profile..."
   echo 'export PATH=$PATH:~/bin' >> "$HOME/.bash_profile"
-  source ~/.bash_profile
-else
-  echo "PATH вече е добавен в ~/.bash_profile."
-  source ~/.bash_profile
 fi
 
 # Проверка и инсталиране на шрифт JetBrainsMono
@@ -48,23 +52,8 @@ else
   echo "oh-my-posh темите вече са клонирани."
 fi
 
-# Показване на списъка с теми и избор
-echo "Изберете тема от списъка:"
-theme_dir="$HOME/posh-thems/themes"
-themes=($(ls "$theme_dir"))
-
-PS3="Изберете номер на тема: "
-select theme in "${themes[@]}"; do
-  if [ -n "$theme" ]; then
-    echo "Избрахте тема: $theme"
-    break
-  else
-    echo "Невалиден избор. Опитайте отново."
-  fi
-done
-
 # Добавяне или актуализиране на eval в ~/.bash_profile
-eval_line="eval \"\$(oh-my-posh init bash --config $theme_dir/$theme)\""
+eval_line="eval \"\$(oh-my-posh init bash --config $theme)\""
 if grep -q 'oh-my-posh init bash --config' "$HOME/.bash_profile" 2>/dev/null; then
   echo "Актуализирам eval командата в ~/.bash_profile..."
   sed -i "/oh-my-posh init bash --config/c\\$eval_line" "$HOME/.bash_profile"
@@ -73,20 +62,13 @@ else
   echo "$eval_line" >> "$HOME/.bash_profile"
 fi
 
-# Пита дали да изпълни source ~/.bash_profile
-read -p "Искате ли да приложите промените веднага? (Y/n): " apply_changes
-apply_changes=${apply_changes:-Y} # Задава Y по подразбиране, ако е празно
+echo "Конфигурацията на oh-my-posh е обновена с тема: $theme."
 
-if [[ "$apply_changes" =~ ^[Yy]$ ]]; then
-  echo "Прилагам промените..."
-  if [ -f "$HOME/.bash_profile" ]; then
-    source "$HOME/.bash_profile"
-    echo "Промените са приложени. За да сте сигурни, рестартирайте терминала или изпълнете: source ~/.bash_profile"
-  else
-    echo "~/.bash_profile не съществува. Уверете се, че сте създали профила."
-  fi
+# Приложение на промените
+echo "Прилагам промените..."
+if [ -f "$HOME/.bash_profile" ]; then
+  source "$HOME/.bash_profile"
+  echo "Промените са приложени. За да сте сигурни, рестартирайте терминала или изпълнете: source ~/.bash_profile"
 else
-  echo "За да приложите промените ръчно, изпълнете:"
-  echo "source ~/.bash_profile"
+  echo "~/.bash_profile не съществува. Уверете се, че сте създали профила."
 fi
-
