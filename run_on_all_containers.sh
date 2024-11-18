@@ -110,17 +110,6 @@ done
 
 echo -e "\nПродължаваме..."
 
-# Извличане на списъка с контейнери
-echo "Извличане на списъка с контейнери..."
-containers=$(pct list | awk 'NR>1 {print $1}')
-if [ -z "$containers" ]; then
-  echo "Няма налични контейнери."
-  exit 1
-fi
-
-echo "Намерени контейнери:"
-echo "$containers"
-
 # Избиране на тема за всички контейнери
 echo "Изберете тема от списъка:"
 echo "Може да проверите темите тук: https://ohmyposh.dev/docs/themes"
@@ -136,6 +125,17 @@ select theme in "${themes[@]}"; do
     echo "Невалиден избор. Опитайте отново."
   fi
 done
+
+# Извличане на списъка с контейнери
+echo "Извличане на списъка с контейнери..."
+containers=$(pct list | awk 'NR>1 {print $1}')
+if [ -z "$containers" ]; then
+  echo "Няма налични контейнери."
+  exit 1
+fi
+
+echo "Намерени контейнери:"
+echo "$containers"
 
 # Избор на действие
 echo ""
