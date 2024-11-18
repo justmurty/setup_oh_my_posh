@@ -86,29 +86,23 @@ else
   echo "$eval_line" >> "$HOME/.bash_profile"
 fi
 
-# Пита дали да изпълни source ~/.bash_profile
-read -p "Искате ли да приложите промените веднага? (Y/n): " apply_changes
-apply_changes=${apply_changes:-Y} # Задава Y по подразбиране, ако е празно
-
-if [[ "$apply_changes" =~ ^[Yy]$ ]]; then
-  echo "Прилагам промените..."
-  if [ -f "$HOME/.bash_profile" ]; then
-    source "$HOME/.bash_profile"
-    echo "Промените са приложени. За да сте сигурни, рестартирайте терминала или изпълнете: source ~/.bash_profile"
-  else
-    echo "~/.bash_profile не съществува. Уверете се, че сте създали профила."
-  fi
+# Приложение на промените
+echo "Прилагам промените..."
+if [ -f "$HOME/.bash_profile" ]; then
+  source "$HOME/.bash_profile"
+  echo "Промените са приложени. За да сте сигурни, рестартирайте терминала или изпълнете: source ~/.bash_profile"
 else
-  echo "За да приложите промените ръчно, изпълнете:"
-  echo "source ~/.bash_profile"
+  echo "~/.bash_profile не съществува. Уверете се, че сте създали профила."
 fi
 
 echo "Готови сме с Proxmox node, сега започваме за всичките контейнери."
 echo -n "Ще започнем след 5 секунди: "
 
-for i in {1..5}; do
-  echo -n "="
-  sleep 1
+# Показва прогрес бар за 5 секунди
+progress_bar="===================================================================="
+for ((i=1; i<=70; i++)); do
+  echo -ne "${progress_bar:0:$i}\r"
+  sleep 0.07
 done
 
 echo -e "\nПродължаваме..."
