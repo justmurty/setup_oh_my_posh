@@ -49,6 +49,8 @@ else
 fi
 
 # Cloning oh-my-posh themes
+echo -e "${BLUE}You can check the themes here: https://ohmyposh.dev/docs/themes${RESET}"
+echo ""
 if [ ! -d "$HOME/posh-thems" ]; then
   echo -e "${YELLOW}Cloning oh-my-posh themes...${RESET}"
   git clone https://github.com/JanDeDobbeleer/oh-my-posh.git "$HOME/posh-thems"
