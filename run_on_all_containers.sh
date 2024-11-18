@@ -109,9 +109,9 @@ for ((i=1; i<=70; i++)); do
 done
 
 echo -e "\nContinuing..."
-
+echo " "
 # Selecting a theme for all containers
-echo "Choose a theme from the list:"
+echo "Choose a theme from the list for containers:"
 echo "You can check the themes here: https://ohmyposh.dev/docs/themes"
 themes_dir="/root/posh-thems/themes"  # Correct path to themes
 themes=($(ls "$themes_dir"))
