@@ -1,27 +1,33 @@
-# Setup Oh My Posh
+# Oh My Posh Setup Script
 
-Този скрипт автоматизира инсталацията и настройката на **Oh My Posh** в системи с Debian и базирани на Debian Linux дистрибуции.
+This repository contains automated setup scripts for **Oh My Posh**, tailored for different environments. Please ensure you are using the correct branch for your setup needs, as the `main` branch may not be up-to-date.
 
-## Какво прави скриптът?
+## Available Branches
 
-1. **Инсталира необходими пакети**:
-   - `curl`
-   - `git`
-   - `zip`
-   - `fontconfig` (за управление на шрифтовете)
-2. **Създава директория `~/bin`** за инсталиране на Oh My Posh.
-3. **Инсталира Oh My Posh** в директорията `~/bin`.
-4. **Добавя `~/bin` към PATH** в `~/.bash_profile`, ако все още не е добавен.
-5. **Инсталира шрифт JetBrainsMono**, ако още не е инсталиран.
-6. **Клонира хранилището с теми на Oh My Posh**.
-7. **Показва списък с налични теми** и ти позволява да избереш една.
-8. **Добавя или актуализира настройката** в `~/.bash_profile`, за да зареди избраната тема.
-9. **Пита дали да приложи промените веднага**, използвайки `source ~/.bash_profile`.
+1. **`proxmox`**:
+   - Designed for Proxmox environments.
+   - Configures **Oh My Posh** across all containers within a Proxmox node.
+   - Fully tested and verified to work as expected.
 
-## Как да използвате скрипта?
+2. **`single-linux`**:
+   - Intended for standalone Debian or Ubuntu Linux distributions.
+   - Automates the installation and configuration of **Oh My Posh** for a single machine.
+   - Fully tested and verified to work on Debian and Ubuntu.
 
-1. Изтеглете скрипта:
-   ```bash
-   wget https://raw.githubusercontent.com/justmurty/setup_oh_my_posh/refs/heads/main/setup_oh_my_posh.sh
-   chmod +x setup_oh_my_posh.sh
-   ./setup_oh_my_posh.sh
+> **Note**: These scripts have only been tested on Debian-based distributions. Functionality on other distributions is not guaranteed.
+
+## How to Choose the Correct Branch?
+
+1. **Proxmox Environment**:
+   - Switch to the `proxmox` branch:
+     ```bash
+     git checkout proxmox
+     ```
+   - Follow the instructions in the `README.md` within the `proxmox` branch.
+
+2. **Single Linux Machine (Debian/Ubuntu)**:
+   - Switch to the `single-linux` branch:
+     ```bash
+     git checkout single-linux
+     ```
+   - Follow the instructions in the `README.md` within the `single-linux` branch.
