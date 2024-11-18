@@ -137,6 +137,12 @@ fi
 echo "Намерени контейнери:"
 echo "$containers"
 
+# Копиране на setup_oh_my_posh.sh в контейнерите
+for container in $containers; do
+  echo "Копиране на setup_oh_my_posh.sh в контейнер $container..."
+  pct push $container ./setup_oh_my_posh.sh /root/setup_oh_my_posh.sh
+done
+
 # Избор на действие
 echo ""
 echo "Изберете какво искате да направите:"
@@ -168,5 +174,7 @@ case $choice in
     exit 1
     ;;
 esac
+
+echo "Скриптът приключи."
 
 echo "Скриптът приключи."
