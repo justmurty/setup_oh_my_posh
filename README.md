@@ -1,26 +1,26 @@
 # Setup Oh My Posh
 
-Този скрипт автоматизира инсталацията и настройката на **Oh My Posh** в системи с Debian и базирани на Debian Linux дистрибуции.
+This script automates the installation and configuration of **Oh My Posh** on Debian-based Linux distributions.
 
-## Какво прави скриптът?
+## What Does the Script Do?
 
-1. **Инсталира необходими пакети**:
+1. **Installs required packages**:
    - `curl`
    - `git`
    - `zip`
-   - `fontconfig` (за управление на шрифтовете)
-2. **Създава директория `~/bin`** за инсталиране на Oh My Posh.
-3. **Инсталира Oh My Posh** в директорията `~/bin`.
-4. **Добавя `~/bin` към PATH** в `~/.bash_profile`, ако все още не е добавен.
-5. **Инсталира шрифт JetBrainsMono**, ако още не е инсталиран.
-6. **Клонира хранилището с теми на Oh My Posh**.
-7. **Показва списък с налични теми** и ти позволява да избереш една.
-8. **Добавя или актуализира настройката** в `~/.bash_profile`, за да зареди избраната тема.
-9. **Пита дали да приложи промените веднага**, използвайки `source ~/.bash_profile`.
+   - `fontconfig` (for font management)
+2. **Creates the `~/bin` directory** for installing Oh My Posh.
+3. **Installs Oh My Posh** in the `~/bin` directory.
+4. **Adds `~/bin` to PATH** in `~/.bash_profile`, if not already added.
+5. **Installs the JetBrainsMono font**, if not already installed.
+6. **Clones the Oh My Posh themes repository**.
+7. **Displays a list of available themes** and allows you to select one.
+8. **Adds or updates the configuration** in `~/.bash_profile` to load the selected theme.
+9. **Prompts to apply changes immediately** by running `source ~/.bash_profile`.
 
-## Как да използвате скрипта?
+## How to Use the Script?
 
-1. Изтеглете скрипта:
+1. Download the script:
    ```bash
    wget https://raw.githubusercontent.com/justmurty/setup_oh_my_posh/refs/heads/main/setup_oh_my_posh.sh
    chmod +x setup_oh_my_posh.sh
