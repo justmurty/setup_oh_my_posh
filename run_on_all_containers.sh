@@ -1,5 +1,18 @@
 #!/bin/bash
 
+echo "Първо трябва да го направим на Proxmox node, за да работи за контейнерите."
+
+read -p "Искате ли да продължите и да го настроим на Proxmox node? (Y/n): " confirm
+confirm=${confirm:-Y} # Задава Y по подразбиране, ако е празно
+
+if [[ "$confirm" =~ ^[Yy]$ ]]; then
+  echo "Продължаваме с настройките на Proxmox node..."
+else
+  echo "Настройката не може да продължи без да се изпълни на Proxmox node."
+  echo "Скриптът спира."
+  exit 1
+fi
+
 # Извличане на списъка с контейнери
 echo "Извличане на списъка с контейнери..."
 containers=$(pct list | awk 'NR>1 {print $1}')
