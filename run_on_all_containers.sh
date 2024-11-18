@@ -54,6 +54,8 @@ else
 fi
 
 # Клониране на oh-my-posh теми
+echo "Изберете тема от списъка:"
+echo "Може да проверите темите тук: https://ohmyposh.dev/docs/themes"
 if [ ! -d "$HOME/posh-thems" ]; then
   echo "Клонирам oh-my-posh теми..."
   git clone https://github.com/JanDeDobbeleer/oh-my-posh.git "$HOME/posh-thems"
