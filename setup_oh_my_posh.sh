@@ -1,74 +1,74 @@
 #!/bin/bash
 
-# Проверка за аргумент за тема
+# Checking for theme argument
 if [ -z "$1" ]; then
-  echo "Не е предоставена тема. Използвайте: ./setup_oh_my_posh.sh <path_to_theme>"
+  echo "No theme provided. Use: ./setup_oh_my_posh.sh <path_to_theme>"
   exit 1
 fi
 
 theme="$1"
 
-# Инсталиране на необходимите пакети
-echo "Инсталирам необходими пакети: curl, git, zip..."
+# Installing required packages
+echo "Installing required packages: curl, git, zip..."
 apt update
 apt install -y curl git zip fontconfig
 
-# Проверка и създаване на директория ~/bin
+# Checking and creating ~/bin directory
 if [ ! -d "$HOME/bin" ]; then
-  echo "Създавам директория ~/bin..."
+  echo "Creating ~/bin directory..."
   mkdir -p "$HOME/bin"
 else
-  echo "Директория ~/bin вече съществува."
+  echo "~/bin directory already exists."
 fi
 
-# Инсталиране на oh-my-posh
+# Installing oh-my-posh
 if [ ! -f "$HOME/bin/oh-my-posh" ]; then
-  echo "Инсталирам oh-my-posh..."
+  echo "Installing oh-my-posh..."
   curl -s https://ohmyposh.dev/install.sh | bash -s -- -d ~/bin
 else
-  echo "oh-my-posh вече е инсталиран."
+  echo "oh-my-posh is already installed."
 fi
 
-# Проверка за ~/.bash_profile и добавяне на PATH
+# Checking for ~/.bash_profile and adding PATH
 if ! grep -q 'export PATH=$PATH:~/bin' "$HOME/.bash_profile" 2>/dev/null; then
-  echo "Добавям PATH в ~/.bash_profile..."
+  echo "Adding PATH to ~/.bash_profile..."
   echo 'export PATH=$PATH:~/bin' >> "$HOME/.bash_profile"
 fi
 
-# Проверка и инсталиране на шрифт JetBrainsMono
+# Checking and installing JetBrainsMono font
 font_installed=$(fc-list | grep -i "JetBrainsMono" | wc -l)
 if [ "$font_installed" -eq 0 ]; then
-  echo "Инсталирам шрифт JetBrainsMono..."
+  echo "Installing JetBrainsMono font..."
   oh-my-posh font install JetBrainsMono
 else
-  echo "Шрифтът JetBrainsMono вече е инсталиран."
+  echo "JetBrainsMono font is already installed."
 fi
 
-# Клониране на oh-my-posh теми
+# Cloning oh-my-posh themes
 if [ ! -d "$HOME/posh-thems" ]; then
-  echo "Клонирам oh-my-posh теми..."
+  echo "Cloning oh-my-posh themes..."
   git clone https://github.com/JanDeDobbeleer/oh-my-posh.git "$HOME/posh-thems"
 else
-  echo "oh-my-posh темите вече са клонирани."
+  echo "oh-my-posh themes are already cloned."
 fi
 
-# Добавяне или актуализиране на eval в ~/.bash_profile
+# Adding or updating eval in ~/.bash_profile
 eval_line="eval \"\$(oh-my-posh init bash --config $theme)\""
 if grep -q 'oh-my-posh init bash --config' "$HOME/.bash_profile" 2>/dev/null; then
-  echo "Актуализирам eval командата в ~/.bash_profile..."
+  echo "Updating eval command in ~/.bash_profile..."
   sed -i "/oh-my-posh init bash --config/c\\$eval_line" "$HOME/.bash_profile"
 else
-  echo "Добавям eval команда в ~/.bash_profile..."
+  echo "Adding eval command to ~/.bash_profile..."
   echo "$eval_line" >> "$HOME/.bash_profile"
 fi
 
-echo "Конфигурацията на oh-my-posh е обновена с тема: $theme."
+echo "oh-my-posh configuration has been updated with theme: $theme."
 
-# Приложение на промените
-echo "Прилагам промените..."
+# Applying changes
+echo "Applying changes..."
 if [ -f "$HOME/.bash_profile" ]; then
   source "$HOME/.bash_profile"
-  echo "Промените са приложени. За да сте сигурни, рестартирайте терминала или изпълнете: source ~/.bash_profile"
+  echo "Changes applied. To ensure they take effect, restart the terminal or run: source ~/.bash_profile"
 else
-  echo "~/.bash_profile не съществува. Уверете се, че сте създали профила."
+  echo "~/.bash_profile does not exist. Ensure the profile is created."
 fi
