@@ -1,180 +1,178 @@
 #!/bin/bash
 
-echo "Първо трябва да го направим на Proxmox node, за да работи за контейнерите."
+echo "First, we need to set it up on the Proxmox node for it to work with containers."
 
-read -p "Искате ли да продължите и да го настроим на Proxmox node? (Y/n): " confirm
-confirm=${confirm:-Y} # Задава Y по подразбиране, ако е празно
+read -p "Do you want to continue and set it up on the Proxmox node? (Y/n): " confirm
+confirm=${confirm:-Y} # Default to Y if empty
 
 if [[ "$confirm" =~ ^[Yy]$ ]]; then
-  echo "Продължаваме с настройките на Proxmox node..."
+  echo "Continuing with Proxmox node setup..."
 else
-  echo "Настройката не може да продължи без да се изпълни на Proxmox node."
-  echo "Скриптът спира."
+  echo "The setup cannot proceed without being executed on the Proxmox node."
+  echo "Script is stopping."
   exit 1
 fi
 
-# Инсталиране на необходимите пакети
-echo "Инсталирам необходими пакети: curl, git, zip..."
+# Installing required packages
+echo "Installing required packages: curl, git, zip..."
 apt update
 apt install -y curl git zip fontconfig
 
-# Проверка и създаване на директория ~/bin
+# Check and create ~/bin directory
 if [ ! -d "$HOME/bin" ]; then
-  echo "Създавам директория ~/bin..."
+  echo "Creating ~/bin directory..."
   mkdir -p "$HOME/bin"
 else
-  echo "Директория ~/bin вече съществува."
+  echo "~/bin directory already exists."
 fi
 
-# Инсталиране на oh-my-posh
+# Installing oh-my-posh
 if [ ! -f "$HOME/bin/oh-my-posh" ]; then
-  echo "Инсталирам oh-my-posh..."
+  echo "Installing oh-my-posh..."
   curl -s https://ohmyposh.dev/install.sh | bash -s -- -d ~/bin
 else
-  echo "oh-my-posh вече е инсталиран."
+  echo "oh-my-posh is already installed."
 fi
 
-# Проверка за ~/.bash_profile и добавяне на PATH
+# Checking ~/.bash_profile and adding PATH
 if ! grep -q 'export PATH=$PATH:~/bin' "$HOME/.bash_profile" 2>/dev/null; then
-  echo "Добавям PATH в ~/.bash_profile..."
+  echo "Adding PATH to ~/.bash_profile..."
   echo 'export PATH=$PATH:~/bin' >> "$HOME/.bash_profile"
   source ~/.bash_profile
 else
-  echo "PATH вече е добавен в ~/.bash_profile."
+  echo "PATH is already added to ~/.bash_profile."
   source ~/.bash_profile
 fi
 
-# Проверка и инсталиране на шрифт JetBrainsMono
+# Checking and installing JetBrainsMono font
 font_installed=$(fc-list | grep -i "JetBrainsMono" | wc -l)
 if [ "$font_installed" -eq 0 ]; then
-  echo "Инсталирам шрифт JetBrainsMono..."
+  echo "Installing JetBrainsMono font..."
   oh-my-posh font install JetBrainsMono
 else
-  echo "Шрифтът JetBrainsMono вече е инсталиран."
+  echo "JetBrainsMono font is already installed."
 fi
 
-# Клониране на oh-my-posh теми
-echo "Изберете тема от списъка:"
-echo "Може да проверите темите тук: https://ohmyposh.dev/docs/themes"
+# Cloning oh-my-posh themes
+echo "Choose a theme from the list:"
+echo "You can check the themes here: https://ohmyposh.dev/docs/themes"
 if [ ! -d "$HOME/posh-thems" ]; then
-  echo "Клонирам oh-my-posh теми..."
+  echo "Cloning oh-my-posh themes..."
   git clone https://github.com/JanDeDobbeleer/oh-my-posh.git "$HOME/posh-thems"
 else
-  echo "oh-my-posh темите вече са клонирани."
+  echo "oh-my-posh themes are already cloned."
 fi
 
-# Показване на списъка с теми и избор
-echo "Изберете тема от списъка:"
+# Displaying the list of themes and selecting one
+echo "Choose a theme from the list:"
 theme_dir="$HOME/posh-thems/themes"
 themes=($(ls "$theme_dir"))
 
-PS3="Изберете номер на тема: "
+PS3="Select theme number: "
 select theme in "${themes[@]}"; do
   if [ -n "$theme" ]; then
-    echo "Избрахте тема: $theme"
+    echo "You selected theme: $theme"
     break
   else
-    echo "Невалиден избор. Опитайте отново."
+    echo "Invalid selection. Try again."
   fi
 done
 
-# Добавяне или актуализиране на eval в ~/.bash_profile
+# Adding or updating eval in ~/.bash_profile
 eval_line="eval \"\$(oh-my-posh init bash --config $theme_dir/$theme)\""
 if grep -q 'oh-my-posh init bash --config' "$HOME/.bash_profile" 2>/dev/null; then
-  echo "Актуализирам eval командата в ~/.bash_profile..."
+  echo "Updating eval command in ~/.bash_profile..."
   sed -i "/oh-my-posh init bash --config/c\\$eval_line" "$HOME/.bash_profile"
 else
-  echo "Добавям eval команда в ~/.bash_profile..."
+  echo "Adding eval command to ~/.bash_profile..."
   echo "$eval_line" >> "$HOME/.bash_profile"
 fi
 
-# Приложение на промените
-echo "Прилагам промените..."
+# Applying changes
+echo "Applying changes..."
 if [ -f "$HOME/.bash_profile" ]; then
   source "$HOME/.bash_profile"
-  echo "Промените са приложени. За да сте сигурни, рестартирайте терминала или изпълнете: source ~/.bash_profile"
+  echo "Changes applied. To ensure they take effect, restart the terminal or run: source ~/.bash_profile"
 else
-  echo "~/.bash_profile не съществува. Уверете се, че сте създали профила."
+  echo "~/.bash_profile does not exist. Ensure the profile is created."
 fi
 
-echo "Готови сме с Proxmox node, сега започваме за всичките контейнери."
-echo -n "Ще започнем след 5 секунди: "
+echo "We are ready with the Proxmox node, now starting with all containers."
+echo -n "Starting in 5 seconds: "
 echo ""
 
-# Показва прогрес бар за 5 секунди
+# Display progress bar for 5 seconds
 progress_bar="===================================================================="
 for ((i=1; i<=70; i++)); do
   echo -ne "${progress_bar:0:$i}\r"
   sleep 0.07
 done
 
-echo -e "\nПродължаваме..."
+echo -e "\nContinuing..."
 
-# Избиране на тема за всички контейнери
-echo "Изберете тема от списъка:"
-echo "Може да проверите темите тук: https://ohmyposh.dev/docs/themes"
-themes_dir="/root/posh-thems/themes"  # Коригиран път към темите
+# Selecting a theme for all containers
+echo "Choose a theme from the list:"
+echo "You can check the themes here: https://ohmyposh.dev/docs/themes"
+themes_dir="/root/posh-thems/themes"  # Correct path to themes
 themes=($(ls "$themes_dir"))
-PS3="Изберете номер на тема: "
+PS3="Select theme number: "
 select theme in "${themes[@]}"; do
   if [ -n "$theme" ]; then
-    echo "Избрахте тема: $theme"
+    echo "You selected theme: $theme"
     selected_theme="$themes_dir/$theme"
     break
   else
-    echo "Невалиден избор. Опитайте отново."
+    echo "Invalid selection. Try again."
   fi
 done
 
-# Извличане на списъка с контейнери
-echo "Извличане на списъка с контейнери..."
+# Retrieving the list of containers
+echo "Retrieving the list of containers..."
 containers=$(pct list | awk 'NR>1 {print $1}')
 if [ -z "$containers" ]; then
-  echo "Няма налични контейнери."
+  echo "No containers available."
   exit 1
 fi
 
-echo "Намерени контейнери:"
+echo "Containers found:"
 echo "$containers"
 
-# Копиране на setup_oh_my_posh.sh в контейнерите
+# Copying setup_oh_my_posh.sh to containers
 for container in $containers; do
-  echo "Копиране на setup_oh_my_posh.sh в /root/ на контейнер $container..."
+  echo "Copying setup_oh_my_posh.sh to /root/ on container $container..."
   pct push $container ./setup_oh_my_posh.sh /root/setup_oh_my_posh.sh
 done
 
-# Избор на действие
+# Choosing action
 echo ""
-echo "Изберете какво искате да направите:"
-echo "1) Приложи към всички контейнери"
-echo "2) Приложи към специфичен контейнер"
-read -p "Въведете номера на избора си (1/2): " choice
+echo "Select what you want to do:"
+echo "1) Apply to all containers"
+echo "2) Apply to a specific container"
+read -p "Enter your choice (1/2): " choice
 
 case $choice in
   1)
-    echo "Избрано е: Приложи към всички контейнери."
+    echo "Selected: Apply to all containers."
     for container in $containers; do
-      echo "Обработка на контейнер $container..."
+      echo "Processing container $container..."
       pct exec $container -- bash -c "chmod +x /root/setup_oh_my_posh.sh && /root/setup_oh_my_posh.sh $selected_theme"
-      echo "Обработката на контейнер $container завърши."
+      echo "Processing of container $container is complete."
     done
     ;;
   2)
-    read -p "Въведете ID на контейнера: " container
+    read -p "Enter container ID: " container
     if [[ "$containers" == *"$container"* ]]; then
-      echo "Обработка на контейнер $container..."
+      echo "Processing container $container..."
       pct exec $container -- bash -c "chmod +x /root/setup_oh_my_posh.sh && /root/setup_oh_my_posh.sh $selected_theme"
-      echo "Обработката на контейнер $container завърши."
+      echo "Processing of container $container is complete."
     else
-      echo "Контейнер с ID $container не е намерен."
+      echo "Container with ID $container not found."
     fi
     ;;
   *)
-    echo "Невалиден избор. Скриптът приключва."
+    echo "Invalid choice. Script is stopping."
     exit 1
     ;;
 esac
 
-echo "Скриптът приключи."
-
-echo "Скриптът приключи."
+echo "Script is complete."
