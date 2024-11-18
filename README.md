@@ -19,15 +19,7 @@ This repository contains automated setup scripts for **Oh My Posh**, tailored fo
 ## How to Choose the Correct Branch?
 
 1. **Proxmox Environment**:
-   - Switch to the `proxmox` branch:
-     ```bash
-     git checkout proxmox
-     ```
    - Follow the instructions in the `README.md` within the `proxmox` branch.
 
 2. **Single Linux Machine (Debian/Ubuntu)**:
-   - Switch to the `single-linux` branch:
-     ```bash
-     git checkout single-linux
-     ```
    - Follow the instructions in the `README.md` within the `single-linux` branch.
